@@ -4,7 +4,7 @@
 
 using namespace std;
 
-
+void initiate_files();
 
 bool auth(); void showmenu(); 
 
@@ -15,12 +15,12 @@ int main() {
     }
 
     int user_input;
-
+    void initiate_files();
     // variable used to measure true size of the data
     int size = 0;
 
     const int GYM_SIZE = 10;
-
+    // arrays to hold file content
     int member_id[GYM_SIZE];
     string member_name[GYM_SIZE];
     
@@ -75,6 +75,31 @@ bool auth() {
         passfile.close();
         return false;
     }
+}
+
+void initiate_files() {
+    fstream trainer_file, member_file, take_trainer_file, plan_file;
+    trainer_file.open("trainer.txt", ios::in);
+    if (!trainer_file) {
+        trainer_file.open("trainer.txt", ios::out);
+        trainer_file.close();
+    }
+    member_file.open("member.txt", ios::in);
+    if (!member_file) {
+        member_file.open("member.txt", ios::out);
+        member_file.close();
+    }
+    take_trainer_file.open("take_trainer.txt", ios::in);
+    if (!take_trainer_file) {
+        take_trainer_file.open("take_trainer.txt", ios::out);
+        take_trainer_file.close();
+    }
+    plan_file.open("plan.txt", ios::in);
+    if (!plan_file) {
+        plan_file.open("plan.txt", ios::out);
+        plan_file.close();
+    }
+
 }
 
 void showmenu() {
