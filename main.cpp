@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 bool auth(); void showmenu(); 
 
 
@@ -14,7 +13,7 @@ int main() {
     }
 
     int user_input;
-
+    void initiate_files();
     // variable used to measure true size of the data
     int size = 0;
 
