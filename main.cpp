@@ -104,4 +104,60 @@ bool auth() {
 
 void showmenu() {
 
+
+    int choice;
+
+    do {
+        cout << "---------------- Welcome to Gym Management System ----------------\n";
+        cout << "Please select an option from the menu below:\n\n";
+
+        cout << "1. Add a new member.\n";
+        cout << "2. Show all members.\n";
+        cout << "3. Delete a member.\n";
+        cout << "4. Assign a plan.\n";
+        cout << "5. Assign a trainer.\n";
+        cout << "6. Count number of members a trainer is training.\n";
+        cout << "7. Exit.\n\n";
+
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cout << "Add a new member selected.\n";
+            break;
+
+        case 2:
+            cout << "Show all members selected.\n";
+            break;
+
+        case 3:
+            cout << "Delete a member selected.\n";
+            break;
+
+        case 4:
+            cout << "Assign a plan selected.\n";
+            break;
+
+        case 5:
+            cout << "Assign a trainer selected.\n";
+            break;
+
+        case 6:
+            cout << "Count number of members a trainer is training selected.\n";
+            break;
+
+        case 7:
+            cout << "Exiting program...\n";
+            break;
+
+        default:
+            cout << "Invalid choice, please try again.\n";
+        }
+
+        cout << endl;
+
+    } while (choice != 7);
+
+    return 0;
 }
