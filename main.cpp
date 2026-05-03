@@ -5,7 +5,6 @@
 using namespace std;
 
 
-
 bool auth(); void showmenu(); 
 
 
@@ -19,11 +18,23 @@ int main() {
     // variable used to measure true size of the data
     int size = 0;
 
-    const int GYM_SIZE = 10;
+    const int MAX_SIZE = 10;
 
-    int member_id[GYM_SIZE];
-    string member_name[GYM_SIZE];
-    
+    // member info
+    int member_id[MAX_SIZE];
+    string member_name[MAX_SIZE];
+    int member_phone[MAX_SIZE];
+    int member_birth[MAX_SIZE];
+    //trainer info
+    int trainer_id[MAX_SIZE];
+    string trainer_name[MAX_SIZE];
+    int trainder_phone[MAX_SIZE];
+    //plan info
+    int plan_id[MAX_SIZE];
+    string plan_name[MAX_SIZE];
+    string plan_desc[MAX_SIZE];
+    //plan-member
+    string duration[MAX_SIZE];    
 
 
     do {
@@ -76,6 +87,7 @@ bool auth() {
         return false;
     }
 }
+
 
 void showmenu() {
 
