@@ -4,8 +4,6 @@
 
 using namespace std;
 
-void initiate_files();
-
 bool auth(); void showmenu(); 
 
 
@@ -19,11 +17,23 @@ int main() {
     // variable used to measure true size of the data
     int size = 0;
 
-    const int GYM_SIZE = 10;
-    // arrays to hold file content
-    int member_id[GYM_SIZE];
-    string member_name[GYM_SIZE];
-    
+    const int MAX_SIZE = 10;
+
+    // member info
+    int member_id[MAX_SIZE];
+    string member_name[MAX_SIZE];
+    int member_phone[MAX_SIZE];
+    int member_birth[MAX_SIZE];
+    //trainer info
+    int trainer_id[MAX_SIZE];
+    string trainer_name[MAX_SIZE];
+    int trainder_phone[MAX_SIZE];
+    //plan info
+    int plan_id[MAX_SIZE];
+    string plan_name[MAX_SIZE];
+    string plan_desc[MAX_SIZE];
+    //plan-member
+    string duration[MAX_SIZE];    
 
 
     do {
@@ -77,30 +87,6 @@ bool auth() {
     }
 }
 
-void initiate_files() {
-    fstream trainer_file, member_file, take_trainer_file, plan_file;
-    trainer_file.open("trainer.txt", ios::in);
-    if (!trainer_file) {
-        trainer_file.open("trainer.txt", ios::out);
-        trainer_file.close();
-    }
-    member_file.open("member.txt", ios::in);
-    if (!member_file) {
-        member_file.open("member.txt", ios::out);
-        member_file.close();
-    }
-    take_trainer_file.open("take_trainer.txt", ios::in);
-    if (!take_trainer_file) {
-        take_trainer_file.open("take_trainer.txt", ios::out);
-        take_trainer_file.close();
-    }
-    plan_file.open("plan.txt", ios::in);
-    if (!plan_file) {
-        plan_file.open("plan.txt", ios::out);
-        plan_file.close();
-    }
-
-}
 
 void showmenu() {
 
