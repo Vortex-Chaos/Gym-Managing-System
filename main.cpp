@@ -5,7 +5,22 @@
 using namespace std;
 
 bool auth(); void showmenu(); 
+void upload_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
+void upload_trainer_info(int trainer_id[], string trainer_name[], int trainer_phone[], int &size);
+void upload_plan_info(int plan_id[], string plan_name[], string plan_desc[], int &size);
+void upload_member_plan_info(int plan_id[], int member_id[], string duration[], int &size);
+void upload_trainer_member_info(int trainer_id[], int member_id[], int &size);
 
+void update_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
+void update_member_file(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
+
+void add_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
+void print_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
+void delete_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
+
+void count_trainer_member(int trainer_id[], int member_id[], int size);
+void assign_plan(int plan_id[], int member_id[], int &size);
+void assign_trainer(int trainer_id[], int member_id[], int size);
 
 int main() {
     if (!auth()) {
