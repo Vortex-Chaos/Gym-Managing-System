@@ -13,6 +13,8 @@ void upload_trainer_member_info(int trainer_id[], int member_id[], int &size);
 
 void update_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
 void update_member_file(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
+void update_member_plan_file(int plan_id[], int member_id[], string duration[], int size);
+void update_trainer_member_file(int trainer_id[], int member_id[], int size);
 
 void add_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
 void print_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
@@ -85,6 +87,8 @@ int main() {
             case 7:
                 cout << "Existing...";
                 update_member_file(member_id, member_name, member_phone, member_birth, member_size);
+                update_member_plan_file(member_plan_plan_id, member_plan_member_id, duration, member_plan_size);
+                update_trainer_member_file(trainer_member_trainer_id, trainer_member_member_id, trainer_member_size);
                 break;
             default:
                 cout << "Invalid input, please enter a number from 1-7";
@@ -226,6 +230,24 @@ void update_member_file(int member_id[], string member_name[], int member_phone[
         member_file << member_id[i] << " " << member_name[i] << " " << member_phone[i] << " " << member_birth[i] << endl;
     }
     member_file.close();
+}
+
+void update_member_plan_file(int plan_id[], int member_id[], string duration[], int size) {
+    fstream member_plan_file;
+    member_plan_file.open("member_plan.txt", ios::out);
+    for (int i = 0; i < size; i++) {
+        member_plan_file << plan_id[i] << " " << member_id[i] << " " << duration[i] << endl;
+    }
+    member_plan_file.close();
+}
+
+void update_trainer_member_file(int trainer_id[], int member_id[], int size) {
+    fstream trainer_member_file;
+    trainer_member_file.open("member_plan.txt", ios::out);
+    for (int i = 0; i < size; i++) {
+        trainer_member_file << trainer_id[i] << " " << member_id[i] << endl;
+    }
+    trainer_member_file.close();
 }
 
 void print_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
