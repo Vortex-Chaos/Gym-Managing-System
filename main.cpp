@@ -148,6 +148,7 @@ void upload_member_info(int member_id[], string member_name[], int member_phone[
         size++;
         index++;
     }
+    member_file.close();
     // debugging line
     //cout << "done uploading member info.\n";
     //for (int i = 0; i<size; i++) {
@@ -168,6 +169,7 @@ void upload_trainer_info(int trainer_id[], string trainer_name[], int trainer_ph
         size++;
         index++;
     }
+    trainer_file.close();
 }
 
 void upload_plan_info(int plan_id[], string plan_name[], string plan_desc[], int &size) {
@@ -184,6 +186,7 @@ void upload_plan_info(int plan_id[], string plan_name[], string plan_desc[], int
         size++;
         index++;
     }
+    plan_file.close();
 }
 
 void upload_member_plan_info(int plan_id[], int member_id[], string duration[], int &size) {
@@ -199,6 +202,7 @@ void upload_member_plan_info(int plan_id[], int member_id[], string duration[], 
         size++;
         index++;
     }
+    member_plan_file.close();
 }
 
 void upload_trainer_member_info(int trainer_id[], int member_id[], int &size) {
@@ -212,10 +216,16 @@ void upload_trainer_member_info(int trainer_id[], int member_id[], int &size) {
         size++;
         index++;
     }
+    trainer_member_file.close();
 }
 
 void update_member_file(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
-
+    fstream member_file;
+    member_file.open("member.txt", ios::out);
+    for (int i = 0; i < size; i++) {
+        member_file << member_id[i] << " " << member_name[i] << " " << member_phone[i] << " " << member_birth[i] << endl;
+    }
+    member_file.close();
 }
 
 void print_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
