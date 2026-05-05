@@ -111,7 +111,13 @@ bool auth() {
     cout << "Enter password to access the system: ";
     getline(cin, user_password);
     getline(passfile, system_password);
+    if (system_password == "") {
+        cout << "System has no password yet, can't continue.";
+        passfile.close();
+        return false;
+    }
     if (user_password == system_password) {
+        cout << endl;
         passfile.close();
         return true;
     }
@@ -138,12 +144,16 @@ void showmenu() {
         cout << "Enter your choice: ";
 }
 
+// all other upload functions follow this one's template
 void upload_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size) {
     fstream member_file;
     int id, phone, birth, index=0;
     string name;
     size = 0;
-    member_file.open("member.txt", std::ios::in | std::ios::out | std::ios::app);
+
+    member_file.open("member.txt", std::ios::in | std::ios::out | std::ios::app); // using this opening method to create the file if it doesn't exist, only ios::in is needed to read.
+
+    // loop line by line while ensuring it doesn't overflow
     while (member_file >> id >> name >> phone >> birth && index < MAX_SIZE) {
         member_id[index] = id;
         member_name[index] = name;
@@ -152,6 +162,11 @@ void upload_member_info(int member_id[], string member_name[], int member_phone[
         size++;
         index++;
     }
+
+    if (index == MAX_SIZE) {
+        cout << "Reached max system capacity for member array, any remaining data will be truncated\n";
+    }
+
     member_file.close();
     // debugging line
     //cout << "done uploading member info.\n";
@@ -165,7 +180,9 @@ void upload_trainer_info(int trainer_id[], string trainer_name[], int trainer_ph
     int id, phone, index=0;
     string name;
     size = 0;
+
     trainer_file.open("trainer.txt", std::ios::in | std::ios::out | std::ios::app);
+
     while (trainer_file >> id >> name >> phone && index < MAX_SIZE) {
         trainer_id[index] = id;
         trainer_name[index] = name;
@@ -173,6 +190,11 @@ void upload_trainer_info(int trainer_id[], string trainer_name[], int trainer_ph
         size++;
         index++;
     }
+
+    if (index == MAX_SIZE) {
+        cout << "Reached max system capacity for trainer array, any remaining data will be truncated\n";
+    }
+
     trainer_file.close();
 }
 
@@ -181,24 +203,34 @@ void upload_plan_info(int plan_id[], string plan_name[], string plan_desc[], int
     int id, index=0;
     string name, desc;
     size = 0;
+
     plan_file.open("plan.txt", std::ios::in | std::ios::out | std::ios::app);
+
     while (plan_file >> id >> name && index < MAX_SIZE) {
-        getline(plan_file, desc);
+        getline(plan_file, desc); // this is done to allow description of plans to have spaces.
         plan_id[index] = id;
         plan_name[index] = name;
         plan_desc[index] = desc;
         size++;
         index++;
     }
+
+    if (index == MAX_SIZE) {
+        cout << "Reached max system capacity for plan array, any remaining data will be truncated\n";
+    }
+
     plan_file.close();
 }
 
 void upload_member_plan_info(int plan_id[], int member_id[], string duration[], int &size) {
+    // added m to in-function variables to let them be different
     fstream member_plan_file;
     int mplan_id, mmember_id, index=0;
     string mduration;
     size = 0;
+
     member_plan_file.open("member_plan.txt", std::ios::in | std::ios::out | std::ios::app);
+
     while (member_plan_file >> mplan_id >> mmember_id >> mduration && index < MAX_SIZE) {
         plan_id[index] = mplan_id;
         member_id[index] = mmember_id;
@@ -206,6 +238,11 @@ void upload_member_plan_info(int plan_id[], int member_id[], string duration[], 
         size++;
         index++;
     }
+
+    if (index == MAX_SIZE) {
+        cout << "Reached max system capacity for member-plan array, any remaining data will be truncated\n";
+    }
+
     member_plan_file.close();
 }
 
@@ -213,40 +250,56 @@ void upload_trainer_member_info(int trainer_id[], int member_id[], int &size) {
     fstream trainer_member_file;
     int mtrainer_id, mmember_id, index=0;
     size = 0;
+
     trainer_member_file.open("trainer_member.txt", std::ios::in | std::ios::out | std::ios::app);
+
     while (trainer_member_file >> mtrainer_id >> mmember_id && index < MAX_SIZE) {
         trainer_id[index] = mtrainer_id;
         member_id[index] = mmember_id;
         size++;
         index++;
+        }
+
+    if (index == MAX_SIZE) {
+        cout << "Reached max system capacity for trainer-member array, any remaining data will be truncated\n";
     }
+
     trainer_member_file.close();
 }
 
 void update_member_file(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
     fstream member_file;
+
     member_file.open("member.txt", ios::out);
+
     for (int i = 0; i < size; i++) {
         member_file << member_id[i] << " " << member_name[i] << " " << member_phone[i] << " " << member_birth[i] << endl;
     }
+
     member_file.close();
 }
 
 void update_member_plan_file(int plan_id[], int member_id[], string duration[], int size) {
     fstream member_plan_file;
+
     member_plan_file.open("member_plan.txt", ios::out);
+
     for (int i = 0; i < size; i++) {
         member_plan_file << plan_id[i] << " " << member_id[i] << " " << duration[i] << endl;
     }
+
     member_plan_file.close();
 }
 
 void update_trainer_member_file(int trainer_id[], int member_id[], int size) {
     fstream trainer_member_file;
+
     trainer_member_file.open("trainer_member.txt", ios::out);
+
     for (int i = 0; i < size; i++) {
         trainer_member_file << trainer_id[i] << " " << member_id[i] << endl;
     }
+    
     trainer_member_file.close();
 }
 
