@@ -24,7 +24,7 @@ void count_trainer_member(int trainer_id[], int member_id[], int size);
 void assign_plan(int plan_id[], int member_id[], int &size);
 void assign_trainer(int trainer_id[], int member_id[], int size);
 
-    const int MAX_SIZE = 10;
+    const int MAX_SIZE = 30;
 
 int main() {
     if (!auth()) {
@@ -85,7 +85,7 @@ int main() {
             case 6:
                 break;
             case 7:
-                cout << "Existing...";
+                cout << "Exiting...";
                 update_member_file(member_id, member_name, member_phone, member_birth, member_size);
                 update_member_plan_file(member_plan_plan_id, member_plan_member_id, duration, member_plan_size);
                 update_trainer_member_file(trainer_member_trainer_id, trainer_member_member_id, trainer_member_size);
@@ -144,7 +144,7 @@ void upload_member_info(int member_id[], string member_name[], int member_phone[
     string name;
     size = 0;
     member_file.open("member.txt", std::ios::in | std::ios::out | std::ios::app);
-    while (member_file >> id >> name >> phone >> birth && index <= MAX_SIZE) {
+    while (member_file >> id >> name >> phone >> birth && index < MAX_SIZE) {
         member_id[index] = id;
         member_name[index] = name;
         member_phone[index] = phone;
@@ -166,7 +166,7 @@ void upload_trainer_info(int trainer_id[], string trainer_name[], int trainer_ph
     string name;
     size = 0;
     trainer_file.open("trainer.txt", std::ios::in | std::ios::out | std::ios::app);
-    while (trainer_file >> id >> name >> phone && index <= MAX_SIZE) {
+    while (trainer_file >> id >> name >> phone && index < MAX_SIZE) {
         trainer_id[index] = id;
         trainer_name[index] = name;
         trainer_phone[index] = phone;
@@ -182,7 +182,7 @@ void upload_plan_info(int plan_id[], string plan_name[], string plan_desc[], int
     string name, desc;
     size = 0;
     plan_file.open("plan.txt", std::ios::in | std::ios::out | std::ios::app);
-    while (plan_file >> id >> name && index <= MAX_SIZE) {
+    while (plan_file >> id >> name && index < MAX_SIZE) {
         getline(plan_file, desc);
         plan_id[index] = id;
         plan_name[index] = name;
@@ -199,7 +199,7 @@ void upload_member_plan_info(int plan_id[], int member_id[], string duration[], 
     string mduration;
     size = 0;
     member_plan_file.open("member_plan.txt", std::ios::in | std::ios::out | std::ios::app);
-    while (member_plan_file >> mplan_id >> mmember_id >> mduration && index <= MAX_SIZE) {
+    while (member_plan_file >> mplan_id >> mmember_id >> mduration && index < MAX_SIZE) {
         plan_id[index] = mplan_id;
         member_id[index] = mmember_id;
         duration[index] = mduration;
@@ -214,7 +214,7 @@ void upload_trainer_member_info(int trainer_id[], int member_id[], int &size) {
     int mtrainer_id, mmember_id, index=0;
     size = 0;
     trainer_member_file.open("trainer_member.txt", std::ios::in | std::ios::out | std::ios::app);
-    while (trainer_member_file >> mtrainer_id >> mmember_id && index <= MAX_SIZE) {
+    while (trainer_member_file >> mtrainer_id >> mmember_id && index < MAX_SIZE) {
         trainer_id[index] = mtrainer_id;
         member_id[index] = mmember_id;
         size++;
@@ -243,7 +243,7 @@ void update_member_plan_file(int plan_id[], int member_id[], string duration[], 
 
 void update_trainer_member_file(int trainer_id[], int member_id[], int size) {
     fstream trainer_member_file;
-    trainer_member_file.open("member_plan.txt", ios::out);
+    trainer_member_file.open("trainer_member.txt", ios::out);
     for (int i = 0; i < size; i++) {
         trainer_member_file << trainer_id[i] << " " << member_id[i] << endl;
     }

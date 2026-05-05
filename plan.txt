@@ -1,0 +1,18 @@
+1 Basic Beginner plan
+2 Standard Intermediate plan
+3 Premium Advanced training
+4 WeightLoss Fat burning program
+5 Strength Muscle building
+6 Cardio Endurance training
+7 Flexibility Stretching routine
+8 Crossfit High intensity workout
+9 Rehab Injury recovery plan
+10 Athlete Performance boost
+11 HomeWorkout No equipment routine
+12 Yoga Relaxation and balance
+13 Powerlifting Heavy strength plan
+14 HIIT Short intense sessions
+15 Senior Low impact fitness
+16 Teen Starter fitness plan
+17 Marathon Long distance training
+18 Bodybuilding Mass gain program
