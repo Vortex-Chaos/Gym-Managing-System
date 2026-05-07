@@ -8,12 +8,12 @@ bool auth(); void showmenu();
 void upload_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
 void upload_trainer_info(int trainer_id[], string trainer_name[], int trainer_phone[], int &size);
 void upload_plan_info(int plan_id[], string plan_name[], string plan_desc[], int &size);
-void upload_member_plan_info(int plan_id[], int member_id[], string duration[], int &size);
+void upload_member_plan_info(int plan_id[], int member_id[], int duration[], int &size);
 void upload_trainer_member_info(int trainer_id[], int member_id[], int &size);
 
 void update_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
 void update_member_file(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
-void update_member_plan_file(int plan_id[], int member_id[], string duration[], int size);
+void update_member_plan_file(int plan_id[], int member_id[], int duration[], int size);
 void update_trainer_member_file(int trainer_id[], int member_id[], int size);
 
 void add_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
@@ -22,8 +22,8 @@ void search_member(int member_id[], string member_name[], int member_phone[], in
 void delete_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
 
 void count_trainer_member(int trainer_id[], int member_id[], int size);
-void assign_plan(int plan_id[], int member_id[], int &size);
-void assign_trainer(int trainer_id[], int member_id[], int size);
+void assign_plan(int plan_id[], int plans_id[], int member_id[], int members_id[], int duration[], int &size, int member_size, int plan_size);
+void assign_trainer(int trainer_id[], int trainers_id[], int member_id[], int members_id[], int &size, int trainer_size, int member_size);
 
     const int MAX_SIZE = 30;
 
@@ -56,7 +56,7 @@ int main() {
     //member-plan
     int member_plan_member_id[MAX_SIZE];
     int member_plan_plan_id[MAX_SIZE];
-    string duration[MAX_SIZE];    
+    int duration[MAX_SIZE];    
     //trainer-member
     int trainer_member_member_id[MAX_SIZE];
     int trainer_member_trainer_id[MAX_SIZE];
@@ -82,8 +82,10 @@ int main() {
             case 4:
                 break;
             case 5:
+                assign_plan(member_plan_plan_id, plan_id, member_plan_member_id, member_id, duration, member_plan_size, member_size, plan_size);
                 break;
             case 6:
+                assign_trainer(trainer_member_trainer_id, trainer_id, trainer_member_member_id, member_id, trainer_member_size, trainer_size, member_size);
                 break;
             case 7:
                 break;
@@ -94,7 +96,7 @@ int main() {
                 update_trainer_member_file(trainer_member_trainer_id, trainer_member_member_id, trainer_member_size);
                 break;
             default:
-                cout << "Invalid input, please enter a number from 1-8";
+                cout << "Invalid input, please enter a number from 1-8\n";
                 break;
         }
     } while (user_input != 8);
@@ -108,7 +110,6 @@ bool auth() {
     passfile.open("password.txt", ios::in);
     if (!passfile) {
         cout << "System has no password yet, can't continue.";
-        passfile.close();
         return false;
     }
     cout << "Enter password to access the system: ";
@@ -155,7 +156,14 @@ void upload_member_info(int member_id[], string member_name[], int member_phone[
     string name;
     size = 0;
 
-    member_file.open("member.txt", std::ios::in | std::ios::out | std::ios::app); // using this opening method to create the file if it doesn't exist, only ios::in is needed to read.
+    member_file.open("member.txt", std::ios::in); // opening with input only
+
+    // creates file if it doesn't exist
+    if (!member_file) {
+        ofstream create("member.txt");
+        create.close();
+        member_file.open("member.txt", std::ios::in);
+    }
 
     // loop line by line while ensuring it doesn't overflow
     while (member_file >> id >> name >> phone >> birth && index < MAX_SIZE) {
@@ -167,7 +175,7 @@ void upload_member_info(int member_id[], string member_name[], int member_phone[
         index++;
     }
 
-    if (index == MAX_SIZE) {
+    if (index >= MAX_SIZE) {
         cout << "Reached max system capacity for member array, any remaining data will be truncated\n";
     }
 
@@ -185,7 +193,13 @@ void upload_trainer_info(int trainer_id[], string trainer_name[], int trainer_ph
     string name;
     size = 0;
 
-    trainer_file.open("trainer.txt", std::ios::in | std::ios::out | std::ios::app);
+    trainer_file.open("trainer.txt", std::ios::in);
+
+    if (!trainer_file) {
+        ofstream create("trainer.txt");
+        create.close();
+        trainer_file.open("trainer.txt", std::ios::in);
+    }
 
     while (trainer_file >> id >> name >> phone && index < MAX_SIZE) {
         trainer_id[index] = id;
@@ -195,7 +209,7 @@ void upload_trainer_info(int trainer_id[], string trainer_name[], int trainer_ph
         index++;
     }
 
-    if (index == MAX_SIZE) {
+    if (index >= MAX_SIZE) {
         cout << "Reached max system capacity for trainer array, any remaining data will be truncated\n";
     }
 
@@ -208,7 +222,13 @@ void upload_plan_info(int plan_id[], string plan_name[], string plan_desc[], int
     string name, desc;
     size = 0;
 
-    plan_file.open("plan.txt", std::ios::in | std::ios::out | std::ios::app);
+    plan_file.open("plan.txt", std::ios::in);
+
+    if (!plan_file) {
+        ofstream create("plan.txt");
+        create.close();
+        plan_file.open("plan.txt", std::ios::in);
+    }
 
     while (plan_file >> id >> name && index < MAX_SIZE) {
         getline(plan_file, desc); // this is done to allow description of plans to have spaces.
@@ -219,21 +239,27 @@ void upload_plan_info(int plan_id[], string plan_name[], string plan_desc[], int
         index++;
     }
 
-    if (index == MAX_SIZE) {
+    if (index >= MAX_SIZE) {
         cout << "Reached max system capacity for plan array, any remaining data will be truncated\n";
     }
 
     plan_file.close();
 }
 
-void upload_member_plan_info(int plan_id[], int member_id[], string duration[], int &size) {
+void upload_member_plan_info(int plan_id[], int member_id[], int duration[], int &size) {
     // added m to in-function variables to let them be different
     fstream member_plan_file;
     int mplan_id, mmember_id, index=0;
-    string mduration;
+    int mduration;
     size = 0;
 
-    member_plan_file.open("member_plan.txt", std::ios::in | std::ios::out | std::ios::app);
+    member_plan_file.open("member_plan.txt", std::ios::in);
+
+    if (!member_plan_file) {
+        ofstream create("member_plan.txt");
+        create.close();
+        member_plan_file.open("member_plan.txt", std::ios::in);
+    }
 
     while (member_plan_file >> mplan_id >> mmember_id >> mduration && index < MAX_SIZE) {
         plan_id[index] = mplan_id;
@@ -243,7 +269,7 @@ void upload_member_plan_info(int plan_id[], int member_id[], string duration[], 
         index++;
     }
 
-    if (index == MAX_SIZE) {
+    if (index >= MAX_SIZE) {
         cout << "Reached max system capacity for member-plan array, any remaining data will be truncated\n";
     }
 
@@ -255,7 +281,13 @@ void upload_trainer_member_info(int trainer_id[], int member_id[], int &size) {
     int mtrainer_id, mmember_id, index=0;
     size = 0;
 
-    trainer_member_file.open("trainer_member.txt", std::ios::in | std::ios::out | std::ios::app);
+    trainer_member_file.open("trainer_member.txt", std::ios::in);
+
+    if (!trainer_member_file) {
+        ofstream create("trainer_member.txt");
+        create.close();
+        trainer_member_file.open("trainer_member.txt", std::ios::in);
+    }
 
     while (trainer_member_file >> mtrainer_id >> mmember_id && index < MAX_SIZE) {
         trainer_id[index] = mtrainer_id;
@@ -264,7 +296,7 @@ void upload_trainer_member_info(int trainer_id[], int member_id[], int &size) {
         index++;
         }
 
-    if (index == MAX_SIZE) {
+    if (index >= MAX_SIZE) {
         cout << "Reached max system capacity for trainer-member array, any remaining data will be truncated\n";
     }
 
@@ -283,7 +315,7 @@ void update_member_file(int member_id[], string member_name[], int member_phone[
     member_file.close();
 }
 
-void update_member_plan_file(int plan_id[], int member_id[], string duration[], int size) {
+void update_member_plan_file(int plan_id[], int member_id[], int duration[], int size) {
     fstream member_plan_file;
 
     member_plan_file.open("member_plan.txt", ios::out);
@@ -315,4 +347,117 @@ void print_member_info(int member_id[], string member_name[], int member_phone[]
 // Yousef write here
 void search_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
     
+}
+
+void assign_plan(int plan_id[], int plans_id[], int member_id[], int members_id[], int duration[], int &size, int member_size, int plan_size) {
+    int member, plan, mduration;
+    bool member_found = false, plan_found = false;
+    
+    if (size >= MAX_SIZE) {
+        cout << "Sorry you can't assign anymore plans. consider increasing system limit.\n\n";
+        return;
+    }
+
+    cout << "Enter member you want to assign a plan to: ";
+    cin >> member;
+
+    for (int i = 0; i < member_size; i++) {
+        if (member == members_id[i]) {
+            member_found = true;
+            break;
+        }
+    }
+
+    if (!member_found) {
+        cout << "Sorry this member doesn't exist, add him first to assign a plan.\n\n";
+        return;
+    }
+
+    cout << "Enter the plan you want to assign: ";
+    cin >> plan;
+
+    for (int i = 0; i < plan_size; i++) {
+        if (plan == plans_id[i]) {
+            plan_found = true;
+            break;
+        }
+    }
+
+    if (!plan_found) {
+        cout << "Sorry this plan doesn't exist.\n\n";
+        return;
+    }
+
+    for (int i = 0; i < size; i++) {
+        if (plan == plan_id[i] && member == member_id[i]) {
+            cout << "This member was already assigned this plan.\n\n";
+            return;
+        }
+    }
+    
+    cout << "Enter duration in days: ";
+    cin >> mduration;
+
+    plan_id[size] = plan;
+    member_id[size] = member;
+    duration[size] = mduration;
+    size++;
+
+    cout << "Plan Assigned to the member.\n\n";
+    return;
+
+}
+
+void assign_trainer(int trainer_id[], int trainers_id[], int member_id[], int members_id[], int &size, int trainer_size, int member_size) {
+    int member, trainer;
+    bool member_found = false, trainer_found = false;
+    
+    if (size >= MAX_SIZE) {
+        cout << "Sorry you can't assign anymore trainers. consider increasing system limit.\n\n";
+        return;
+    }
+
+    cout << "Enter member you want to assign a trainer to: ";
+    cin >> member;
+
+    for (int i = 0; i < member_size; i++) {
+        if (member == members_id[i]) {
+            member_found = true;
+            break;
+        }
+    }
+
+    if (!member_found) {
+        cout << "Sorry this member doesn't exist, add him first to assign a plan.\n\n";
+        return;
+    }
+
+    cout << "Enter the trainer you want to assign: ";
+    cin >> trainer;
+
+    for (int i = 0; i < trainer_size; i++) {
+        if (trainer == trainers_id[i]) {
+            trainer_found = true;
+            break;
+        }
+    }
+
+    if (!trainer_found) {
+        cout << "Sorry this trainer doesn't exist.\n\n";
+        return;
+    }
+
+    for (int i = 0; i < size; i++) {
+        if (trainer == trainer_id[i] && member == member_id[i]) {
+            cout << "This member was already assigned this trainer.\n\n";
+            return;
+        }
+    }
+
+    trainer_id[size] = trainer;
+    member_id[size] = member;
+    size++;
+
+    cout << "Trainer Assigned to the member.\n\n";
+    return;
 }
