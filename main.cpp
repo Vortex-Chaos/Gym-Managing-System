@@ -18,6 +18,7 @@ void update_trainer_member_file(int trainer_id[], int member_id[], int size);
 
 void add_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
 void print_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
+void search_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
 void delete_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
 
 void count_trainer_member(int trainer_id[], int member_id[], int size);
@@ -85,16 +86,18 @@ int main() {
             case 6:
                 break;
             case 7:
+                break;
+            case 8:
                 cout << "Exiting...";
                 update_member_file(member_id, member_name, member_phone, member_birth, member_size);
                 update_member_plan_file(member_plan_plan_id, member_plan_member_id, duration, member_plan_size);
                 update_trainer_member_file(trainer_member_trainer_id, trainer_member_member_id, trainer_member_size);
                 break;
             default:
-                cout << "Invalid input, please enter a number from 1-7";
+                cout << "Invalid input, please enter a number from 1-8";
                 break;
         }
-    } while (user_input != 7);
+    } while (user_input != 8);
 }
 
 // Ensures correct password has been entered before starting the system.
@@ -136,10 +139,11 @@ void showmenu() {
         cout << "1. Add a new member.\n";
         cout << "2. Show all members.\n";
         cout << "3. Delete a member.\n";
-        cout << "4. Assign a plan.\n";
-        cout << "5. Assign a trainer.\n";
-        cout << "6. Count number of members a trainer is training.\n";
-        cout << "7. Exit.\n\n";
+        cout << "4. Search for a member.\n";
+        cout << "5. Assign a plan.\n";
+        cout << "6. Assign a trainer.\n";
+        cout << "7. Count number of members a trainer is training.\n";
+        cout << "8. Exit.\n\n";
 
         cout << "Enter your choice: ";
 }
@@ -303,6 +307,12 @@ void update_trainer_member_file(int trainer_id[], int member_id[], int size) {
     trainer_member_file.close();
 }
 
+//Mohammed write here
 void print_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
+    
+}
+
+// Yousef write here
+void search_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
     
 }
