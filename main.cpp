@@ -345,9 +345,6 @@ void print_member_info(int member_id[], string member_name[], int member_phone[]
         cout << setw(15) << member_id[i] << setw(16) << member_name[i] << setw(15) << member_phone[i] << setw(15) << member_birth[i] << endl;
     }
 }
-void print_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
-    
-}
 
 // Yousef write here
 void search_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
