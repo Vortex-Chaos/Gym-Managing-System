@@ -339,7 +339,12 @@ void update_trainer_member_file(int trainer_id[], int member_id[], int size) {
     trainer_member_file.close();
 }
 
-//Mohammed write here
+void print_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
+    cout << left << setw(15) << "Member ID:" << setw(16) << "Member Name:" << setw(15) << "Member phone:" << setw(15) << "Member Birthdate:" << endl;
+    for (int i = 0; i < size; i++) {
+        cout << setw(15) << member_id[i] << setw(16) << member_name[i] << setw(15) << member_phone[i] << setw(15) << member_birth[i] << endl;
+    }
+}
 void print_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
     
 }
