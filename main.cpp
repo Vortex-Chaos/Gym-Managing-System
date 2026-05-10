@@ -348,6 +348,24 @@ void print_member_info(int member_id[], string member_name[], int member_phone[]
 
 // Yousef write here
 void search_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
+    int id;
+    cout << "Write the ID of the member: ";
+    cin >> id;
+
+    for (int i = 0; i < size; i++) {
+        if (member_id[i] == id) {
+            cout << "Member ID:        " << member_id[i] << endl
+                << "Member Name:      " << member_name[i] << endl
+                << "Member Phone:     " << member_phone[i] << endl
+                << "Member Birthdate: " << member_birth[i] << endl;
+            return;
+        }
+    }
+
+    cout << "Couldn't find this user in the system.\n";
+    return;
+}
+
     
 }
 
