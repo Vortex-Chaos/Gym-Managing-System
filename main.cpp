@@ -76,10 +76,12 @@ int main() {
             case 1:
                 break;
             case 2:
+                print_member_info(member_id, member_name, member_phone, member_birth, member_size);
                 break;
             case 3:
                 break;
             case 4:
+                search_member(member_id, member_name, member_phone, member_birth, member_size);
                 break;
             case 5:
                 assign_plan(member_plan_plan_id, plan_id, member_plan_member_id, member_id, duration, member_plan_size, member_size, plan_size);
@@ -346,7 +348,6 @@ void print_member_info(int member_id[], string member_name[], int member_phone[]
     }
 }
 
-// Yousef write here
 void search_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int size) {
     int id;
     cout << "Write the ID of the member: ";
@@ -363,10 +364,7 @@ void search_member(int member_id[], string member_name[], int member_phone[], in
     }
 
     cout << "Couldn't find this user in the system.\n";
-    return;
-}
-
-    
+    return; 
 }
 
 void assign_plan(int plan_id[], int plans_id[], int member_id[], int members_id[], int duration[], int &size, int member_size, int plan_size) {
