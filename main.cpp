@@ -109,30 +109,28 @@ int main() {
 bool auth() {
     string system_password;
     string user_password;
+    string user;
+    string system_user;
     fstream passfile;
     passfile.open("password.txt", ios::in);
     if (!passfile) {
         cout << "System has no password yet, can't continue.";
         return false;
     }
+    cout << "Enter username: ";
+    getline(cin, user);
     cout << "Enter password to access the system: ";
     getline(cin, user_password);
-    getline(passfile, system_password);
-    if (system_password == "") {
-        cout << "System has no password yet, can't continue.";
-        passfile.close();
-        return false;
+    while (getline(passfile, system_user) && getline(passfile, system_password)) {
+        if (user == system_user && user_password == system_password) {
+            cout << endl;
+            passfile.close();
+            return true;
+        }
     }
-    if (user_password == system_password) {
-        cout << endl;
-        passfile.close();
-        return true;
-    }
-    else {
-        cout << "Incorrect password.";
-        passfile.close();
-        return false;
-    }
+    cout << "Incorrect username or password.";
+    passfile.close();
+    return false;
 }
 
 
