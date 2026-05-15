@@ -5,7 +5,7 @@
 
 using namespace std;
 
-bool auth(); void showmenu(); 
+bool auth(string& role, int& id); void showmenu(); 
 void upload_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
 void upload_trainer_info(int trainer_id[], string trainer_name[], int trainer_phone[], int &size);
 void upload_plan_info(int plan_id[], string plan_name[], string plan_desc[], int &size);
@@ -20,7 +20,9 @@ void update_trainer_member_file(int trainer_id[], int member_id[], int size);
 void add_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
 void print_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
 void search_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int size);
-void delete_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
+void delete_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int &member_size,
+                   int trainer_id[], int trainer_member_id[], int &trainer_member_size,
+                   int plan_id[], int member_plan_id[], int duration[], int &member_plan_size);
 
 void count_trainer_member(int trainer_id[], int member_id[], int size);
 void assign_plan(int plan_id[], int plans_id[], int member_id[], int members_id[], int duration[], int &size, int member_size, int plan_size);
@@ -29,7 +31,9 @@ void assign_trainer(int trainer_id[], int trainers_id[], int member_id[], int me
     const int MAX_SIZE = 30;
 
 int main() {
-    if (!auth()) {
+    string role;
+    int id;
+    if (!auth(role, id)) {
         return 0;
     }
 
@@ -70,62 +74,103 @@ int main() {
     upload_member_plan_info(member_plan_plan_id, member_plan_member_id, duration, member_plan_size);
     upload_trainer_member_info(trainer_member_trainer_id, trainer_member_member_id, trainer_member_size);
 
-    do {
-        showmenu();
-        cin >> user_input;
-        switch (user_input) {
-            case 1:
-                break;
-            case 2:
-                print_member_info(member_id, member_name, member_phone, member_birth, member_size);
-                break;
-            case 3:
-                delete_member(member_id, member_name, member_phone, member_birth, member_size);
-                break;
-            case 4:
-                search_member(member_id, member_name, member_phone, member_birth, member_size);
-                break;
-            case 5:
-                assign_plan(member_plan_plan_id, plan_id, member_plan_member_id, member_id, duration, member_plan_size, member_size, plan_size);
-                break;
-            case 6:
-                assign_trainer(trainer_member_trainer_id, trainer_id, trainer_member_member_id, member_id, trainer_member_size, trainer_size, member_size);
-                break;
-            case 7:
-                break;
-            case 8:
-                cout << "Exiting...";
-                update_member_file(member_id, member_name, member_phone, member_birth, member_size);
-                update_member_plan_file(member_plan_plan_id, member_plan_member_id, duration, member_plan_size);
-                update_trainer_member_file(trainer_member_trainer_id, trainer_member_member_id, trainer_member_size);
-                break;
-            default:
-                cout << "Invalid input, please enter a number from 1-8\n";
-                break;
+    // members panel
+    if (role == "member") {
+        for (int k = 0; k < member_size; k++) {
+            if (member_id[k] == id) {
+                cout << left << setw(15) << "Member ID:" << setw(16) << "Member Name:" << setw(15) << "Member phone:" << setw(15) << "Member Birthdate:" << endl;
+                cout << setw(15) << member_id[k] << setw(16) << member_name[k] << setw(15) << member_phone[k] << setw(15) << member_birth[k] << endl;
+                cout << "Plans:\n";
+                for (int i = 0; i < member_plan_size; i++) {
+                    if (member_id[k] == member_plan_member_id[i]) {
+                        cout << "ID: " << setw(4) << member_plan_plan_id[i] << " ";
+                        for (int j = 0; j < plan_size; j++) {
+                            if (member_plan_plan_id[i] == plan_id[j]) { cout << "Name: " << setw(10) << plan_name[j] << " Duration: " << setw(3) << duration[i] << endl;}
+                        }
+                    }
+                }
+                cout << "Trainers:\n";
+                for (int i = 0; i < trainer_member_size; i++) {
+                    if (member_id[k] == trainer_member_member_id[i]) {
+                        cout << "ID: " << setw(4) << trainer_member_trainer_id[i] << " ";
+                        for (int j = 0; j < trainer_size; j++) {
+                            if (trainer_member_trainer_id[i] == trainer_id[j]) { cout << "Name: " << setw(10) << trainer_name[j] << endl;}
+                        }
+                    }
+                }
+                return 0;
+            }
         }
-    } while (user_input != 8);
+        cout << "This user is no longer registered.\n";
+    }
+
+    // admin panel
+    if (role == "admin") {
+        do {
+            showmenu();
+            cin >> user_input;
+            switch (user_input) {
+                case 1:
+                    break;
+                case 2:
+                    print_member_info(member_id, member_name, member_phone, member_birth, member_size);
+                    break;
+                case 3:
+                    delete_member(member_id, member_name, member_phone, member_birth, member_size,
+                                  trainer_member_trainer_id, trainer_member_member_id, trainer_member_size,
+                                  member_plan_plan_id, member_plan_member_id, duration, member_plan_size);
+                    break;
+                case 4:
+                    search_member(member_id, member_name, member_phone, member_birth, member_size);
+                    break;
+                case 5:
+                    assign_plan(member_plan_plan_id, plan_id, member_plan_member_id, member_id, duration, member_plan_size, member_size, plan_size);
+                    break;
+                case 6:
+                    assign_trainer(trainer_member_trainer_id, trainer_id, trainer_member_member_id, member_id, trainer_member_size, trainer_size, member_size);
+                    break;
+                case 7:
+                    break;
+                case 8:
+                    cout << "Exiting...";
+                    update_member_file(member_id, member_name, member_phone, member_birth, member_size);
+                    update_member_plan_file(member_plan_plan_id, member_plan_member_id, duration, member_plan_size);
+                    update_trainer_member_file(trainer_member_trainer_id, trainer_member_member_id, trainer_member_size);
+                    break;
+                default:
+                    cout << "Invalid input, please enter a number from 1-8\n";
+                    break;
+            }
+        } while (user_input != 8);
+    }
 }
 
 // Ensures correct password has been entered before starting the system.
-bool auth() {
+bool auth(string& role, int& id) {
     string system_password;
     string user_password;
     string user;
     string system_user;
+    string role_line;
+    string id_line;
     fstream passfile;
+
+
     passfile.open("password.txt", ios::in);
     if (!passfile) {
         cout << "System has no password yet, can't continue.";
         return false;
     }
+
     cout << "Enter username: ";
     getline(cin, user);
     cout << "Enter password to access the system: ";
     getline(cin, user_password);
-    while (getline(passfile, system_user) && getline(passfile, system_password)) {
+    while (getline(passfile, system_user) && getline(passfile, system_password) && getline(passfile, role) && getline(passfile, id_line)) {
         if (user == system_user && user_password == system_password) {
             cout << endl;
             passfile.close();
+            id = stoi(id_line);
             return true;
         }
     }
@@ -446,7 +491,7 @@ void assign_trainer(int trainer_id[], int trainers_id[], int member_id[], int me
     }
 
     if (!member_found) {
-        cout << "Sorry this member doesn't exist, add him first to assign a plan.\n\n";
+        cout << "Sorry this member doesn't exist, add him first to assign a trainer.\n\n";
         return;
     }
 
@@ -480,19 +525,41 @@ void assign_trainer(int trainer_id[], int trainers_id[], int member_id[], int me
     return;
 }
 
-void delete_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size) {
+void delete_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int &member_size,
+                   int trainer_id[], int trainer_member_id[], int &trainer_member_size,
+                   int plan_id[], int member_plan_id[], int duration[], int &member_plan_size) {
     int id;
     cout << "Enter the ID of the member you want to delete: ";
     cin >> id;
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < member_size; i++) {
         // This loses ordering, but nothing depends on order so it still works
         // Left shifting by 1 has higher time complexity
         if (member_id[i] == id) {
-            size--;
-            member_id[i] = member_id[size];
-            member_name[i] = member_name[size];
-            member_phone[i] = member_phone[size];
-            member_birth[i] = member_birth[size];
+            // member file deletion
+            member_size--;
+            member_id[i] = member_id[member_size];
+            member_name[i] = member_name[member_size];
+            member_phone[i] = member_phone[member_size];
+            member_birth[i] = member_birth[member_size];
+            // trainer member file deletion
+            for (int j = 0; j < trainer_member_size; j++) {
+                if (trainer_member_id[j] == id) {
+                    --trainer_member_size;
+                    trainer_id[j] = trainer_id[trainer_member_size];
+                    trainer_member_id[j] = trainer_member_id[trainer_member_size];
+                    j--;
+                }
+            }
+            // plan member file deletion
+            for (int j = 0; j < member_plan_size; j++) {
+                if (member_plan_id[j] == id) {
+                    --member_plan_size;
+                    plan_id[j] = plan_id[member_plan_size];
+                    member_plan_id[j] = member_plan_id[member_plan_size];
+                    duration[j] = duration[member_plan_size];
+                    j--;
+                }
+            }
             cout << "Successfully deleted the member.\n";
             return;
         }
