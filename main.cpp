@@ -80,6 +80,7 @@ int main() {
                 print_member_info(member_id, member_name, member_phone, member_birth, member_size);
                 break;
             case 3:
+                delete_member(member_id, member_name, member_phone, member_birth, member_size);
                 break;
             case 4:
                 search_member(member_id, member_name, member_phone, member_birth, member_size);
@@ -477,4 +478,24 @@ void assign_trainer(int trainer_id[], int trainers_id[], int member_id[], int me
 
     cout << "Trainer Assigned to the member.\n\n";
     return;
+}
+
+void delete_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size) {
+    int id;
+    cout << "Enter the ID of the member you want to delete: ";
+    cin >> id;
+    for (int i = 0; i < size; i++) {
+        // This loses ordering, but nothing depends on order so it still works
+        // Left shifting by 1 has higher time complexity
+        if (member_id[i] == id) {
+            size--;
+            member_id[i] = member_id[size];
+            member_name[i] = member_name[size];
+            member_phone[i] = member_phone[size];
+            member_birth[i] = member_birth[size];
+            cout << "Successfully deleted the member.\n";
+            return;
+        }
+    }
+    cout << "Couldn't find a member with that ID.\n";
 }
