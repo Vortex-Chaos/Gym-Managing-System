@@ -5,6 +5,10 @@
 
 using namespace std;
 
+// utility functions
+template <typename T>
+int binary_search(T arr[], T target, int size);
+
 bool auth(string& role, int& id); void showmenu(); 
 void upload_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size);
 void upload_trainer_info(int trainer_id[], string trainer_name[], int trainer_phone[], int &size);
@@ -144,7 +148,26 @@ int main() {
         } while (user_input != 8);
     }
 }
-
+template <typename T>
+int binary_search(T arr[], T target, int size) {
+    int left = 0;
+    int right = size-1;
+    int mid;
+    while (left<=right) {
+        // this formula avoids int overflow, same as (left+right)/2
+        mid = left + (right - left) / 2;
+        if (arr[mid] == target) {
+            return mid;
+        }
+        else if (arr[mid] > target) {
+            right = mid - 1;
+        }
+        else {
+            left = mid + 1;
+        }
+    }
+    return -1;
+}
 // Ensures correct password has been entered before starting the system.
 bool auth(string& role, int& id) {
     string system_password;
@@ -162,19 +185,26 @@ bool auth(string& role, int& id) {
         return false;
     }
 
-    cout << "Enter username: ";
-    getline(cin, user);
-    cout << "Enter password to access the system: ";
-    getline(cin, user_password);
-    while (getline(passfile, system_user) && getline(passfile, system_password) && getline(passfile, role) && getline(passfile, id_line)) {
-        if (user == system_user && user_password == system_password) {
-            cout << endl;
-            passfile.close();
-            id = stoi(id_line);
-            return true;
+    for (int i = 0; i < 3; i++) {
+        passfile.clear();
+        passfile.seekg(0);
+        cout << "Enter username: ";
+        getline(cin, user);
+        cout << "Enter password to access the system: ";
+        getline(cin, user_password);
+        while (getline(passfile, system_user) && getline(passfile, system_password) && getline(passfile, role) && getline(passfile, id_line)) {
+            if (user == system_user && user_password == system_password) {
+                cout << endl;
+                passfile.close();
+                id = stoi(id_line);
+                return true;
+            }
         }
+        cout << "Incorrect username or password.";
+        cout << "\nYou have " << 2-i << " attempts left.\n";
+
     }
-    cout << "Incorrect username or password.";
+    cout << "Exiting system (Failed Authentication)\n";
     passfile.close();
     return false;
 }
@@ -397,19 +427,16 @@ void search_member(int member_id[], string member_name[], int member_phone[], in
     int id;
     cout << "Write the ID of the member: ";
     cin >> id;
-
-    for (int i = 0; i < size; i++) {
-        if (member_id[i] == id) {
-            cout << "Member ID:        " << member_id[i] << endl
-                << "Member Name:      " << member_name[i] << endl
-                << "Member Phone:     " << member_phone[i] << endl
-                << "Member Birthdate: " << member_birth[i] << endl;
-            return;
-        }
+    int i = binary_search(member_id, id, size);
+    if (i == -1) {
+        cout << "Couldn't find this user in the system.\n";
+        return; 
     }
-
-    cout << "Couldn't find this user in the system.\n";
-    return; 
+    cout << "Member ID:        " << member_id[i] << endl
+         << "Member Name:      " << member_name[i] << endl
+         << "Member Phone:     " << member_phone[i] << endl
+         << "Member Birthdate: " << member_birth[i] << endl;
+    return;
 }
 
 void assign_plan(int plan_id[], int plans_id[], int member_id[], int members_id[], int duration[], int &size, int member_size, int plan_size) {
@@ -531,38 +558,46 @@ void delete_member(int member_id[], string member_name[], int member_phone[], in
     int id;
     cout << "Enter the ID of the member you want to delete: ";
     cin >> id;
-    for (int i = 0; i < member_size; i++) {
-        // This loses ordering, but nothing depends on order so it still works
-        // Left shifting by 1 has higher time complexity
-        if (member_id[i] == id) {
-            // member file deletion
-            member_size--;
-            member_id[i] = member_id[member_size];
-            member_name[i] = member_name[member_size];
-            member_phone[i] = member_phone[member_size];
-            member_birth[i] = member_birth[member_size];
-            // trainer member file deletion
-            for (int j = 0; j < trainer_member_size; j++) {
-                if (trainer_member_id[j] == id) {
-                    --trainer_member_size;
-                    trainer_id[j] = trainer_id[trainer_member_size];
-                    trainer_member_id[j] = trainer_member_id[trainer_member_size];
-                    j--;
-                }
-            }
-            // plan member file deletion
-            for (int j = 0; j < member_plan_size; j++) {
-                if (member_plan_id[j] == id) {
-                    --member_plan_size;
-                    plan_id[j] = plan_id[member_plan_size];
-                    member_plan_id[j] = member_plan_id[member_plan_size];
-                    duration[j] = duration[member_plan_size];
-                    j--;
-                }
-            }
-            cout << "Successfully deleted the member.\n";
-            return;
-        }
+    int index = binary_search(member_id, id, member_size);
+    if (index == -1) {
+        cout << "Couldn't find a member with that ID.\n";
+        return;
     }
-    cout << "Couldn't find a member with that ID.\n";
+    // Left shifting by 1 to keep order
+    // Member deletion
+    for (int i = index; i < member_size - 1; i++) {
+        member_id[i] = member_id[i+1];
+        member_name[i] = member_name[i+1];
+        member_phone[i] = member_phone[i+1];
+        member_birth[i] = member_birth[i+1];
+    }
+    --member_size;
+
+    // Trainer-member deletion
+    for (int i = 0; i < trainer_member_size; i++) {
+        if (trainer_member_id[i] == id) {
+            for (int j = i; j < trainer_member_size - 1; j++) {
+                trainer_id[j] = trainer_id[j+1];
+                trainer_member_id[j] = trainer_member_id[j+1];
+            }
+            trainer_member_size--;
+            i--;
+        }
+    } 
+    
+    // member plan deletion
+    for (int i = 0; i < member_plan_size; i++) {
+        if (member_plan_id[i] == id) {
+            for (int j = i; j < member_plan_size - 1; j++) {
+                plan_id[j] = plan_id[j+1];
+                member_plan_id[j] = member_plan_id[j+1];
+                duration[j] = duration[j+1];
+            }
+            member_plan_size--;
+            i--;
+        }
+    } 
+
+    cout << "Successfully deleted the member.\n";
+    return;
 }
