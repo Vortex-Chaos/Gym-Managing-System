@@ -115,6 +115,7 @@ int main() {
             cin >> user_input;
             switch (user_input) {
                 case 1:
+                    add_member_info(member_id, member_name, member_phone, member_birth, member_size);
                     break;
                 case 2:
                     print_member_info(member_id, member_name, member_phone, member_birth, member_size);
@@ -134,6 +135,7 @@ int main() {
                     assign_trainer(trainer_member_trainer_id, trainer_id, trainer_member_member_id, member_id, trainer_member_size, trainer_size, member_size);
                     break;
                 case 7:
+                    count_trainer_member(trainer_member_trainer_id, trainer_member_member_id, trainer_member_size);
                     break;
                 case 8:
                     cout << "Exiting...";
@@ -488,6 +490,11 @@ void assign_plan(int plan_id[], int plans_id[], int member_id[], int members_id[
     cout << "Enter duration in days: ";
     cin >> mduration;
 
+    if (mduration <= 0) {
+        cout << "Duration can't be negative.\n";
+        return;
+    }
+
     plan_id[size] = plan;
     member_id[size] = member;
     duration[size] = mduration;
@@ -552,6 +559,37 @@ void assign_trainer(int trainer_id[], int trainers_id[], int member_id[], int me
     return;
 }
 
+void add_member_info(int member_id[], string member_name[], int member_phone[], int member_birth[], int &size) {
+    if (size >= MAX_SIZE) {
+        cout << "Max size reached, consider increasing max system storage.\n";
+        return;
+    }
+
+    int id,phone,birth;
+    string name;
+
+    cout << "Enter the new member info (ID automatically added)\n";
+    cout << "Name: ";
+    cin >> name;
+    cout << "Phone number: ";
+    cin >> phone;
+    cout << "Birth date: ";
+    cin >> birth;
+
+    if (size == 0) {
+        id = 1;
+    }
+    else {
+        id = member_id[size-1]+1;
+    }
+
+    member_id[size] = id;
+    member_name[size] = name;
+    member_phone[size] = phone;
+    member_birth[size] = birth;
+    size++;
+}
+
 void delete_member(int member_id[], string member_name[], int member_phone[], int member_birth[], int &member_size,
                    int trainer_id[], int trainer_member_id[], int &trainer_member_size,
                    int plan_id[], int member_plan_id[], int duration[], int &member_plan_size) {
@@ -601,3 +639,23 @@ void delete_member(int member_id[], string member_name[], int member_phone[], in
     cout << "Successfully deleted the member.\n";
     return;
 }
+
+void count_trainer_member(int trainer_id[], int member_id[], int size) {
+    int id,count=0;
+    cout << "Enter the id of the trainer: ";
+    cin >> id;
+    for (int i = 0; i < size; i++) {
+        if (trainer_id[i] == id) {
+            count++;
+        }
+    }
+    cout << "This trainer is training " << count << " members\n";
+    if (count == 0) return;
+    cout << "Member ID list: ";
+    for (int i = 0; i < size; i++) {
+        if (trainer_id[i] == id) {
+            cout << member_id[i] << " "; 
+        }
+    }
+    cout << endl;
+}   
