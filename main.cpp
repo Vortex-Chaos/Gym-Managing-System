@@ -102,6 +102,8 @@ int main() {
                         }
                     }
                 }
+                cout << "Press anything to leave...";
+                cin.get();
                 return 0;
             }
         }
@@ -113,6 +115,7 @@ int main() {
         do {
             showmenu();
             cin >> user_input;
+            if (cin.fail()) {cin.clear(); cin.ignore(1000); cout << "Invalid input, please use only numbers.\n";}
             switch (user_input) {
                 case 1:
                     add_member_info(member_id, member_name, member_phone, member_birth, member_size);
