@@ -211,6 +211,7 @@ bool auth(string& role, int& id) {
     }
     cout << "Exiting system (Failed Authentication)\n";
     passfile.close();
+    cin.get();
     return false;
 }
 
